@@ -24,7 +24,7 @@ function rulesActivatorHandler() {
   setTimeout(() => rulesPopup.classList.add('rules__popup--click'), 20);
 }
 
-function rulesClose() {
+function rulesCloseHandler() {
   // hidde rules
   rulesPopup.classList.remove('rules__popup--click');
   setTimeout(() => rulesPopup.classList.remove('rules__popup--grid'), 300);
@@ -33,18 +33,22 @@ function rulesClose() {
   backdrop.classList.remove('backdrop--click');
   setTimeout(() => backdrop.classList.remove('backdrop--block'), 300);
 }
-function houseRandom() {
+function houseSelection() {
+  // return string for add class to house button
+
   let randomSelection = Math.random();
-  if (randomSelection < 0.34) {
+  if (randomSelection < 0.33) {
     return 'rock';
-  } else if (randomSelection < 0.67) {
+  } else if (randomSelection < 0.66) {
     return 'paper';
   } else {
     return 'scissors';
   }
 }
 function battleWinner(youPicked, housePicked) {
-  // console.log(score.textContent);
+  // get winner, update score and update localstore
+  // return position needed for display battle result
+
   if (youPicked == housePicked) {
     return 0;
   } else if (
@@ -52,55 +56,59 @@ function battleWinner(youPicked, housePicked) {
     (youPicked == 'paper' && housePicked == 'rock') ||
     (youPicked == 'scissors' && housePicked == 'paper')
   ) {
+    // needed for string + int problem, coercion
     score.textContent = +score.textContent + 1;
     localStorage.setItem('score', +score.textContent);
-
     return 1;
   } else {
+    // needed for string + int problem, coercion
+    // ternary operation for prevent negative score
     score.textContent =
       +score.textContent == 0 ? +score.textContent : +score.textContent - 1;
     localStorage.setItem('score', +score.textContent);
-
     return 2;
   }
 }
 
-function actionHandler(event) {
+function startActionHandler(event) {
   if (event.target.closest('.action__button')) {
     console.log(
       event.target.closest('.action__button').childNodes[1].classList[1]
     );
-
+    // display result
     action.classList.add('action--opacity');
     setTimeout(() => action.classList.add('action--click'), 300);
 
     battle.classList.add('battle--click');
     setTimeout(() => battle.classList.add('battle--opacity'), 600);
 
+    // on battle div
     // you picked
 
     youPicked.classList.add(
       `${event.target.closest('.action__button').classList[1]}`
     );
-    let svgClone = event.target
+    // clone svg base on class position
+    let youSelectedSvgClone = event.target
       .closest('.action__button')
       .childNodes[1].cloneNode(true);
-    youPicked.append(svgClone);
+    youPicked.append(youSelectedSvgClone);
 
     // house picked
 
-    let houseRandomResult = houseRandom();
-    housePicked.classList.add(`action__button--${houseRandomResult}`);
-    let houseClone = document
-      .querySelector(`.${houseRandomResult}`)
+    let houseSelectionResult = houseSelection();
+    housePicked.classList.add(`action__button--${houseSelectionResult}`);
+    // clone svg base on svg class
+    let houseSelectedSvgClone = document
+      .querySelector(`.${houseSelectionResult}`)
       .cloneNode(true);
-    housePicked.append(houseClone);
+    housePicked.append(houseSelectedSvgClone);
 
     // battle winner
     let you = event.target.closest('.action__button').childNodes[1]
       .classList[1];
-    // console.log(battleWinner(you, houseRandomResult));
-    battleResult[battleWinner(you, houseRandomResult)].classList.add(
+    // console.log(battleWinner(you, houseSelectionResult));
+    battleResult[battleWinner(you, houseSelectionResult)].classList.add(
       'battle__result--active'
     );
   }
@@ -132,21 +140,22 @@ function playAgainHandler() {
     );
   }, 300);
 }
-function load() {
-  console.log(localStorage.getItem('score'));
+function getStoreScoreInt() {
   score.textContent = localStorage.getItem('score')
     ? +localStorage.getItem('score')
     : 0;
 }
 
 rulesBtn.addEventListener('click', rulesActivatorHandler);
-backdrop.addEventListener('click', rulesClose);
+backdrop.addEventListener('click', rulesCloseHandler);
 
-rulesCloseBtn.forEach((item) => item.addEventListener('click', rulesClose));
-action.addEventListener('click', actionHandler);
+rulesCloseBtn.forEach((item) =>
+  item.addEventListener('click', rulesCloseHandler)
+);
+action.addEventListener('click', startActionHandler);
 playAgainBtn.addEventListener('click', playAgainHandler);
 
-window.onload = load;
+window.onload = getStoreScoreInt;
 // const rootElement = document.querySelector('.foods');
 
 // const foodData = [
