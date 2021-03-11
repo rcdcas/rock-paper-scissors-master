@@ -107,7 +107,7 @@ function startActionHandler(event) {
     // battle winner
     let youSelection = event.target.closest('.action__button').childNodes[1]
       .classList[1];
-    // applying class --active to one off three h1 for loss, win or draw
+    // applying class --active to one off three h1 -- loss, win or draw
     battleResult[
       battleWinner(youSelection, houseSelectionResult)
     ].classList.add('battle__result--active');
