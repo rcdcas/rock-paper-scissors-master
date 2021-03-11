@@ -84,10 +84,10 @@ function startActionHandler(event) {
 
     // on battle div
     // you picked
-
     youPicked.classList.add(
       `${event.target.closest('.action__button').classList[1]}`
     );
+
     // clone svg base on class position
     let youSelectedSvgClone = event.target
       .closest('.action__button')
@@ -105,12 +105,12 @@ function startActionHandler(event) {
     housePicked.append(houseSelectedSvgClone);
 
     // battle winner
-    let you = event.target.closest('.action__button').childNodes[1]
+    let youSelection = event.target.closest('.action__button').childNodes[1]
       .classList[1];
-    // console.log(battleWinner(you, houseSelectionResult));
-    battleResult[battleWinner(you, houseSelectionResult)].classList.add(
-      'battle__result--active'
-    );
+    // applying class --active to one off three h1 for loss, win or draw
+    battleResult[
+      battleWinner(youSelection, houseSelectionResult)
+    ].classList.add('battle__result--active');
   }
 }
 
